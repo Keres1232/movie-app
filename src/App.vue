@@ -1,37 +1,36 @@
-<script setup>
-import Navbar from './components/Navbar.vue'
-</script>
-
 <template>
-  <div id="app">
-    <Navbar />
-    
+  <div class="app-shell">
+    <AppNav />
     <main class="main-content">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </main>
   </div>
 </template>
 
-<style>
-/* Reset básico */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+<script setup>
+import AppNav from './components/AppNav.vue'
+import { useMovieStore } from './stores/movieStore'
+import { onMounted } from 'vue'
 
-body {
-  background-color: #141414;
-  font-family: Arial, Helvetica, sans-serif;
-}
+const store = useMovieStore()
+onMounted(() => {
+  store.fetchGenres()
+  store.fetchMovies()
+})
+</script>
 
-/* Contenedor principal */
-#app {
+<style scoped>
+.app-shell {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
-
-/* Espacio para que el navbar fijo no tape contenido */
 .main-content {
-  padding-top: 80px;
+  flex: 1;
+  padding-top: 72px;
 }
 </style>
